@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smack示例</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="error_invalid_email">邮箱地址错误</string>
+    <string name="error_invalid_password">密码太短</string>
+    <string name="error_incorrect_password">密码错误</string>
+    <string name="error_field_required">这是必填项</string>
+    <string name="permission_rationale">"联系人权限需要提供完整的邮箱地址。"</string>
+
+    <string name="title_activity_main">主页面</string>
+    <string name="navigation_drawer_open">打开导航抽屉</string>
+    <string name="navigation_drawer_close">关闭导航抽屉</string>
+
+    <string name="action_settings">设置</string>
+
+    <string name="app_bar_import">导入</string>
+    <string name="app_bar_gallery">画廊</string>
+    <string name="app_bar_slideshow">幻灯片</string>
+    <string name="app_bar_tools">工具</string>
+
+    <string name="app_contracts">联系人</string>
+    <string name="app_conferences">讨论组</string>
+</resources>
