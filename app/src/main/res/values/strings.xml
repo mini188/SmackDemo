@@ -26,4 +26,6 @@
     <string name="app_bar_tools">Tools</string>
     <string name="app_contracts">Contracts</string>
     <string name="app_conferences">Conferences</string>
+
+    <string name="sending">sending</string>
 </resources>

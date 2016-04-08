@@ -26,4 +26,5 @@
 
     <string name="app_contracts">联系人</string>
     <string name="app_conferences">讨论组</string>
+    <string name="sending">发送</string>
 </resources>
