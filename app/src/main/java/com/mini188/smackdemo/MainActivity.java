@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +30,13 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -85,6 +89,29 @@ public class MainActivity extends AppCompatActivity
 
         Roster roster = Roster.getInstanceFor(_conn);
         Set<RosterEntry> entries = roster.getEntries();
+        roster.addRosterListener(new RosterListener() {
+            @Override
+            public void entriesAdded(Collection<String> collection) {
+                Log.i("entriesAdded", collection.toString());
+            }
+
+            @Override
+            public void entriesUpdated(Collection<String> collection) {
+                Log.i("entriesUpdated", collection.toString());
+            }
+
+            @Override
+            public void entriesDeleted(Collection<String> collection) {
+                Log.i("entriesDeleted", collection.toString());
+            }
+
+            @Override
+            public void presenceChanged(Presence presence) {
+                Log.i("presenceChanged", presence.getStatus());
+
+            }
+        });
+
         for (RosterEntry r: entries){
             contacts.add(r);
         }
@@ -145,13 +172,6 @@ public class MainActivity extends AppCompatActivity
 
         _conn = XmppConnectionService.getInstance().getXmppConnection();
         _chatMgr  = XmppConnectionService.getInstance().getChatManager();
-
-        _chatMgr.addChatListener(new ChatManagerListener() {
-            @Override
-            public void chatCreated(Chat chat, boolean createdLocally) {
-                XmppConnectionService.getInstance().addChat(chat.getParticipant(), chat);
-            }
-        });
         initTabs();
     }
 

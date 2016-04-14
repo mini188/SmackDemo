@@ -7,6 +7,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 
@@ -28,6 +30,7 @@ import javax.net.ssl.X509TrustManager;
 public class XmppConnectionService {
     private static  XmppConnectionService _xmppService;
     private AbstractXMPPConnection _xmppConnection;
+    private String _userName;
     private final Hashtable<String, Chat> _chatList = new Hashtable<String, Chat>();
 
     private  XmppConnectionService(){
@@ -62,6 +65,9 @@ public class XmppConnectionService {
                 try {
                     _xmppConnection.connect();
                     _xmppConnection.login();
+
+                    Presence presence = new Presence(Presence.Type.available);
+                    _xmppConnection.sendStanza(presence);
                 } catch (IOException e) {
                     Log.e("XMPP_CONNLOGIN", e.getMessage());
                 } catch (XMPPException e) {
@@ -71,6 +77,8 @@ public class XmppConnectionService {
                 }
             }
         }.start();
+
+        _userName = userName;
     }
 
     private SSLContext getSslContent(){
@@ -104,23 +112,6 @@ public class XmppConnectionService {
         return  null;
     }
 
-    public void sendMessage(String msg) {
-        synchronized (XmppConnectionService.class){
-            if (_xmppConnection == null) {
-                return;
-            }
-
-            org.jivesoftware.smack.packet.Message message = new org.jivesoftware.smack.packet.Message();
-            message.setTo("t1@zrtc");
-            message.setBody(msg);
-            try {
-                _xmppConnection.sendStanza(message);
-            } catch (SmackException.NotConnectedException e) {
-                Log.e("XMPP_SENDMESSAGE", e.getMessage(), e);
-            }
-        }
-    }
-
     public  AbstractXMPPConnection getXmppConnection() {
         return  _xmppConnection;
     }
@@ -149,5 +140,9 @@ public class XmppConnectionService {
                 return null;
             }
         }
+    }
+
+    public String getUserName() {
+        return _userName;
     }
 }

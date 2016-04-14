@@ -39,7 +39,11 @@ public class ListItemAdapter extends ArrayAdapter<RosterEntry> {
 
         TextView tvName = (TextView) view.findViewById(R.id.contact_display_name);
         TextView tvJid = (TextView) view.findViewById(R.id.contact_jid);
-        tvName.setText(item.getName());
+        if (item.getName() != null){
+            tvName.setText(item.getName());
+        } else {
+            tvName.setText(item.getUser().replace("@zrtc", ""));
+        }
         tvJid.setText(item.getUser());
 
         return view;

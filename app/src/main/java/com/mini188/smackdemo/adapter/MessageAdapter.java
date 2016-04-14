@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mini188.smackdemo.ChatActivity;
 import com.mini188.smackdemo.R;
+import com.mini188.smackdemo.XmppService.XmppConnectionService;
 
 import org.jivesoftware.smack.packet.Message;
 
@@ -29,7 +30,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         final Message message = getItem(position);
-        if ("xiexb@zrtc".equals(message.getTo())) {
+        String loginUser = XmppConnectionService.getInstance().getXmppConnection().getUser();
+        if (loginUser.contains(message.getTo())) {
             view = _activity.getLayoutInflater().inflate(R.layout.message_received, parent, false);
         }
         else {

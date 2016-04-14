@@ -3,6 +3,7 @@ package com.mini188.smackdemo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EditText;
@@ -12,11 +13,16 @@ import android.widget.ListView;
 import com.mini188.smackdemo.XmppService.XmppConnectionService;
 import com.mini188.smackdemo.adapter.MessageAdapter;
 
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatMessageListener;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +43,10 @@ public class ChatActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                _msgList.add(message);
-                _messageAdapter.notifyDataSetChanged();
+                if (StringUtils.isNullOrEmpty(message.getBody()) == false) {
+                    _msgList.add(message);
+                    _messageAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -48,7 +56,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         _chatMgr = XmppConnectionService.getInstance().getChatManager();
-
         _msgEdit = (EditText) findViewById(R.id.textinput);
         _sendButton = (ImageButton) findViewById(R.id.textSendButton);
 
@@ -101,15 +108,30 @@ public class ChatActivity extends AppCompatActivity {
         createChat(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        _chat.close();
+    }
+
     private void createChat(Intent intent) {
         _jid = intent.getStringExtra(JID);
-        _chat = _chatMgr.createChat(_jid);
+        _chat = XmppConnectionService.getInstance().getChat(_jid);
+        if (_chat == null) {
+            _chat = _chatMgr.createChat(_jid);
+        }
 
-
-        _chat.addMessageListener(new ChatMessageListener() {
+        XmppConnectionService.getInstance().getXmppConnection().addAsyncStanzaListener(new StanzaListener() {
             @Override
-            public void processMessage(Chat chat, Message message) {
-                addMessage(message);
+            public void processPacket(Stanza packet) throws SmackException.NotConnectedException {
+                addMessage((Message) packet);
+            }
+        }, new StanzaFilter() {
+            @Override
+            public boolean accept(Stanza stanza) {
+                return stanza.getFrom().contains(_jid)
+                        && stanza.getTo().contains(XmppConnectionService.getInstance().getUserName());
             }
         });
     }

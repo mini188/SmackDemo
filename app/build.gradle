@@ -25,8 +25,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    compile "org.igniterealtime.smack:smack-android-extensions:4.1.0"
-    compile "org.igniterealtime.smack:smack-android:4.1.0"
-    compile "org.igniterealtime.smack:smack-tcp:4.1.0"
+    compile "org.igniterealtime.smack:smack-android-extensions:4.1.6"
+    compile "org.igniterealtime.smack:smack-android:4.1.6"
+    compile "org.igniterealtime.smack:smack-tcp:4.1.6"
     compile 'com.makeramen:roundedimageview:2.2.0'
 }
